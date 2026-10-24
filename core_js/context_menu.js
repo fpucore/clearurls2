@@ -13,46 +13,56 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 /*jshint esversion: 6 */
-/*
-This script is responsible for context menu cleaning functions
-and based on: https://github.com/mdn/webextensions-examples/tree/master/context-menu-copy-link-with-types
-*/
 
+/**
+ * This script is responsible for context menu cleaning functions
+ */
+
+/**
+ * Create or remove the context menu based on the setting
+ */
 function contextMenuStart() {
-    if(storage.contextMenuEnabled) {
-        // FIX: Remove existing menus first to prevent duplicate ID errors on reload
-        browser.contextMenus.removeAll().then(() => {
+    // Always remove existing menus first to prevent duplicates
+    browser.contextMenus.removeAll().then(() => {
+        if(storage.contextMenuEnabled) {
             browser.contextMenus.create({
                 id: "copy-link-to-clipboard",
                 title: translate("clipboard_copy_link"),
                 contexts: ["link"]
             });
-        }).catch(() => {
-            // Fallback in case removeAll fails (e.g., first time load)
-            browser.contextMenus.create({
-                id: "copy-link-to-clipboard",
-                title: translate("clipboard_copy_link"),
-                contexts: ["link"]
+        }
+    });
+}
+
+/**
+ * Listen for messages from settings page to update context menu
+ */
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "updateContextMenu") {
+        storage.contextMenuEnabled = message.enabled;
+        contextMenuStart();
+        sendResponse({success: true});
+    }
+});
+
+/**
+ * Handle context menu click
+ */
+browser.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === "copy-link-to-clipboard") {
+        const url = pureCleaning(info.linkUrl);
+
+        browser.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ["/external_js/clipboard-helper.js"]
+        }).then(() => {
+            return browser.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: (cleanUrl) => { copyToClipboard(cleanUrl); },
+                args: [url]
             });
-        });
-
-        browser.contextMenus.onClicked.addListener((info, tab) => {
-            if (info.menuItemId === "copy-link-to-clipboard") {
-                const url = pureCleaning(info.linkUrl);
-
-                browser.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    files: ["/external_js/clipboard-helper.js"]
-                }).then(() => {
-                    return browser.scripting.executeScript({
-                        target: { tabId: tab.id },
-                        func: (cleanUrl) => { copyToClipboard(cleanUrl); },
-                        args: [url]
-                    });
-                }).catch((error) => {
-                    console.error("Failed to copy text: " + error);
-                });
-            }
+        }).catch((error) => {
+            console.error("Failed to copy text: " + error);
         });
     }
-}
+});
