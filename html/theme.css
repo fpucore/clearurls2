@@ -1,0 +1,486 @@
+/*
+ ClearURLs2
+ Copyright (c) 2026  Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ ClearURLs2 Unified Theme - Light & Dark Mode 
+ */
+
+/*
+ Light mode
+ */
+ 
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --accent: #007bff;
+    --accent-hover: #0056b3;
+    --success: #28a745;
+    --success-bg: #d4edda;
+    --success-text: #155724;
+    --danger: #dc3545;
+    --danger-hover: #c82333;
+    --danger-bg: #f8d7da;
+    --danger-text: #721c24;
+    --secondary: #6c757d;
+    --secondary-hover: #545b62;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-strong: rgba(0, 0, 0, 0.15);
+    --toggle-bg: #ccc;
+    --toggle-bg-on: #007bff;
+    --code-bg: #f1f3f5;
+}
+
+/*
+ Dark mode
+ */
+ 
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #252525;
+    --bg-tertiary: #2f2f2f;
+    --text-primary: #e9ecef;
+    --text-secondary: #ced4da;
+    --text-muted: #adb5bd;
+    --border-color: #3a3a3a;
+    --accent: #4dabf7;
+    --accent-hover: #74c0fc;
+    --success: #51cf66;
+    --success-bg: #1e3a2a;
+    --success-text: #a3e6b5;
+    --danger: #ff6b6b;
+    --danger-hover: #ff8787;
+    --danger-bg: #3a1e1e;
+    --danger-text: #ffb3b3;
+    --secondary: #868e96;
+    --secondary-hover: #adb5bd;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --shadow-strong: rgba(0, 0, 0, 0.6);
+    --toggle-bg: #495057;
+    --toggle-bg-on: #4dabf7;
+    --code-bg: #2f2f2f;
+}
+
+/*
+ Base styles
+ */
+ 
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
+    margin: 0;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--text-primary);
+    font-size: 18px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--accent-hover);
+}
+
+/*
+ Status banner
+ */
+ 
+.status {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.status.active {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.status.inactive {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+}
+
+/*
+ Sections / Cards
+ */
+ 
+.section {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.stats {
+    background-color: var(--bg-secondary);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-box {
+    background: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.stat-row:last-child {
+    margin-bottom: 0;
+}
+
+/*
+ Toggle section (Settings rows)
+ */
+ 
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.setting-description {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.toggle-section {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.toggle-row:last-child {
+    margin-bottom: 0;
+}
+
+/*
+ Toggle switches
+ */
+   
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-bg);
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--toggle-bg-on);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/*
+ Buttons
+ */
+
+button {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    color: white;
+}
+
+button:last-child {
+    margin-bottom: 0;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+.button-group {
+    margin-top: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-group button {
+    width: 200px;
+    margin: 0;
+}
+
+/* 
+ Inputs
+ */
+ 
+input[type="number"],
+input[type="text"] {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/*
+ Log viewer
+ */
+ 
+.log-viewer {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.log-entry {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.log-url {
+    word-break: break-all;
+    color: var(--text-secondary);
+}
+
+.log-rule {
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.log-time {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.no-logs {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 20px;
+}
+
+/*
+ Status messages
+ */
+ 
+.status-message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    display: none;
+}
+
+.status-message.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    display: block;
+}
+
+.status-message.error {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+    display: block;
+}
+
+/* 
+ Footer
+ */
+ 
+.footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/*
+ Scrollbar (for dark mode)
+ */
+ 
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

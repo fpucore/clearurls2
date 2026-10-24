@@ -1,0 +1,197 @@
+<!--
+ ClearURLs2
+ Copyright (c) 2026  Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearURLs2 Settings</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ClearURLs2 Settings</h1>
+    
+    <div class="section">
+        <h2>Appearance</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Dark Mode</div>
+                <div class="setting-description">Switch between light and dark theme (syncs with popup)</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>General Settings</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Enable ClearURLs2</div>
+                <div class="setting-description">Turn URL cleaning on or off globally</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="globalStatus">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Enable Logging</div>
+                <div class="setting-description">Keep a log of cleaned URLs</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="loggingStatus">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Show Badge Counter</div>
+                <div class="setting-description">Display cleaned URL count on extension icon</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="badgedStatus">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Enable Statistics</div>
+                <div class="setting-description">Track total URLs processed and cleaned</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="statisticsStatus">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Skip Local Hosts</div>
+                <div class="setting-description">Don't clean URLs on localhost or local networks</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="localHostsSkipping">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Advanced Settings</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Enable Context Menu</div>
+                <div class="setting-description">Add "Copy Clean Link" to right-click menu</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="contextMenuEnabled">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Enable History Listener</div>
+                <div class="setting-description">Clean URLs added to browser history</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="historyListenerEnabled">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Domain Blocking</div>
+                <div class="setting-description">Block entire domains marked as trackers</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="domainBlocking">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Ping Blocking</div>
+                <div class="setting-description">Block tracking ping requests</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="pingBlocking">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Referral Marketing</div>
+                <div class="setting-description">Remove referral marketing parameters</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="referralMarketing">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="totalCounter">0</div>
+                <div class="stat-label">Total URLs Processed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="cleanedCounter">0</div>
+                <div class="stat-label">URLs Cleaned</div>
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="resetStatsBtn" class="btn-danger">Reset Statistics</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Log Management</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Log Limit</div>
+                <div class="setting-description">Maximum number of log entries to keep</div>
+            </div>
+            <input type="number" id="logLimit" min="0" max="10000" style="width: 100px;">
+        </div>
+        <div class="button-group">
+            <button id="clearLogBtn" class="btn-danger">Clear Log</button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

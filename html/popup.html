@@ -1,0 +1,87 @@
+<!--
+ ClearURLs2
+ Copyright (c) 2026  Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearURLs2</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        body {
+            width: 350px;
+            padding: 15px;
+        }
+        .btn-full {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>ClearURLs2</h1>
+    
+    <div id="status" class="status active">
+        Extension is active
+    </div>
+    
+    <div class="stats">
+        <div class="stat-row">
+            <span>Total URLs processed:</span>
+            <span id="totalCounter">0</span>
+        </div>
+        <div class="stat-row">
+            <span>URLs cleaned:</span>
+            <span id="cleanedCounter">0</span>
+        </div>
+    </div>
+    
+    <div class="toggle-section">
+        <div class="toggle-row">
+            <span class="setting-label">Enable Logging</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="loggingToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-row">
+            <span class="setting-label">Dark Mode</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    
+    <button id="viewLogBtn" class="btn-secondary btn-full">View Log</button>
+    <button id="toggleBtn" class="btn-primary btn-full">Disable Extension</button>
+    <button id="optionsBtn" class="btn-secondary btn-full">Open Settings</button>
+    <button id="clearLogBtn" class="btn-danger btn-full">Clear Log</button>
+    
+    <div id="logViewer" class="log-viewer" style="display: none;">
+        <div id="logContent"></div>
+    </div>
+    
+    <div class="footer">
+        <a href="https://docs.clearurls.xyz" target="_blank">Documentation</a>
+    </div>
+    
+    <script src="theme.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
