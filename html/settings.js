@@ -70,6 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const update = {};
                 update[key] = settings[key].checked;
                 browser.storage.local.set(update).then(() => {
+                    // Special handling for context menu - send message to background
+                    if (key === 'contextMenuEnabled') {
+                        browser.runtime.sendMessage({
+                            action: "updateContextMenu",
+                            enabled: settings[key].checked
+                        }).catch((error) => {
+                            console.error('Error updating context menu:', error);
+                        });
+                    }
                     showStatus('Setting saved', 'success');
                 }).catch((error) => {
                     console.error('Error saving setting:', error);

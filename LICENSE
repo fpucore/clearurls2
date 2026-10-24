@@ -803,7 +803,8 @@ state the exclusion of warranty; and each file should have at least the
 
     ClearURLs2 - A Manifest V3 fork of ClearURLs for removing tracking 
     elements from UDIs.
-    Copyright (C) 2026  Chris McGimpsey-Jones
+
+    Copyright (C) 2026  Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
