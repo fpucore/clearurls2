@@ -26,6 +26,10 @@ This is a fork of the original [ClearURLs](https://www.github.com/ClearURLs/) pr
 
 ## Installation
 
+### From the Chrome Web Store
+
+https://chromewebstore.google.com/detail/clearurls2/kdkekhajgkgkocnnohkajiamohjcjfjj
+
 ### From Source
 
 1. Clone this repository:
