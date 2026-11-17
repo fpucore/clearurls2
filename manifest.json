@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ClearURLs2",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "Chris McGimpsey-Jones",
   "description": "__MSG_extension_description__",
   "homepage_url": "https://www.github.com/fpucore/clearurls2",
@@ -32,7 +32,6 @@
   },
   "permissions": [
     "declarativeNetRequest",
-    "declarativeNetRequestFeedback",
     "storage",
     "unlimitedStorage",
     "contextMenus",

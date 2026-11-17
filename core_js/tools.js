@@ -1,20 +1,21 @@
 /*
-* ClearURLs
-* Copyright (c) 2017-2025 Kevin Röbert
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * ClearURLs2
+ * Copyright (c) 2026 Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+ * Copyright (c) 2017-2025 Kevin Röbert
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*jshint esversion: 6 */
 /*
@@ -170,7 +171,7 @@ function increaseTotalCounter(number) {
 function increaseCleanedCounter() {
     if (storage.statisticsStatus) {
         storage.cleanedCounter++;
-        deferSaveOnDisk('cleanedCounter');
+        saveOnDisk(['cleanedCounter']);
     }
 }
 
@@ -286,8 +287,14 @@ function handleError(error) {
  * @param rule              the rule that triggered the process
  */
 function pushToLog(beforeProcessing, afterProcessing, rule) {
-    const limit = Math.max(0, storage.logLimit);
-    if (storage.loggingStatus && limit !== 0 && !isNaN(limit)) {
+    const rawLimit = Number(storage.logLimit);
+    const limit = Number.isFinite(rawLimit) ? Math.max(0, rawLimit) : 100;
+
+    if (storage.loggingStatus && limit !== 0) {
+        if (!storage.log || !Array.isArray(storage.log.log)) {
+            storage.log = { log: [] };
+        }
+
         while (storage.log.log.length >= limit
         || storage.log.log.length >= logThreshold) {
             storage.log.log.shift();
@@ -301,7 +308,7 @@ function pushToLog(beforeProcessing, afterProcessing, rule) {
                 "timestamp": Date.now()
             }
         );
-        deferSaveOnDisk('log');
+        saveOnDisk(['log']);
     }
 }
 

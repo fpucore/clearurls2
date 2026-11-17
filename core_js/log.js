@@ -1,5 +1,6 @@
 /*
- * ClearURLs
+ * ClearURLs2
+ * Copyright (c) 2026 Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
  * Copyright (c) 2017-2025 Kevin Röbert
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,12 +19,25 @@
 
 /*jshint esversion: 6 */
 /**
-* Get the log and display the data as table.
+* Get log, display data as table
 */
 var log = {};
 
 /**
-* Reset the global log
+* Helper to normalize log payload whether returned as a json string or an object
+*/
+function parseLogPayload(raw) {
+    if (!raw) return { log: [] };
+    try {
+        const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+        return (parsed && Array.isArray(parsed.log)) ? parsed : { log: [] };
+    } catch (e) {
+        return { log: [] };
+    }
+}
+
+/**
+* Reset global log
 */
 function resetGlobalLog(){
     let obj = {"log": []};
@@ -33,22 +47,21 @@ function resetGlobalLog(){
         params: ['log', JSON.stringify(obj)]
     }).catch(handleError);
 
-    location.reload();
+    browser.storage.local.set({ log: JSON.stringify(obj) }).then(() => {
+        location.reload();
+    }).catch(handleError);
 }
 
 /**
-* Get the log and display to the user
+* Get log, display to user
 */
 function getLog()
 {
-    browser.runtime.sendMessage({
-        function: "getData",
-        params: ['log']
-    }).then((data) => {
-        log = data.response;
+    browser.storage.local.get(['log']).then((res) => {
+        log = parseLogPayload(res && res.log);
 
-        // Sort the log | issue #70
-        log.log.sort(function(a,b) {
+        // Sort log
+        log.log.sort(function(a, b) {
             return b.timestamp - a.timestamp;
         });
 
@@ -82,12 +95,12 @@ function getLog()
             "language": {
                 "url": getDataTableTranslation()
             }
-        } ).order([3, 'desc']).draw();
+        }).order([3, 'desc']).draw();
     }).catch(handleError);
 }
 
 /**
- * Get the translation file for the DataTable
+ * Get translation file for DataTable
  */
 function getDataTableTranslation()
 {
@@ -97,7 +110,7 @@ function getDataTableTranslation()
 }
 
 /**
-* Convert timestamp to date
+* Convert timestamp > date
 */
 function toDate(time)
 {
@@ -105,14 +118,12 @@ function toDate(time)
 }
 
 /**
- * This function export the global log as json file.
+ * This function exports the global log as json
  */
 function exportGlobalLog() {
-    browser.runtime.sendMessage({
-        function: "getData",
-        params: ['log']
-    }).then((data) => {
-        let blob = new Blob([JSON.stringify(data.response)], {type: 'application/json'});
+    browser.storage.local.get(['log']).then((res) => {
+        const parsedLog = parseLogPayload(res && res.log);
+        let blob = new Blob([JSON.stringify(parsedLog, null, 2)], {type: 'application/json'});
 
         browser.downloads.download({
             'url': URL.createObjectURL(blob),
@@ -123,7 +134,7 @@ function exportGlobalLog() {
 }
 
 /**
- * This function imports an exported global log and overwrites the old one.
+ * This function imports exported global log and overwrites old one
  */
 function importGlobalLog(evt) {
     let file = evt.target.files[0];
@@ -133,15 +144,17 @@ function importGlobalLog(evt) {
         browser.runtime.sendMessage({
             function: "setData",
             params: ["log", e.target.result]
-        }).then(() => {
+        }).catch(handleError);
+
+        browser.storage.local.set({ log: e.target.result }).then(() => {
             location.reload();
-        }, handleError);
+        }).catch(handleError);
     };
     fileReader.readAsText(file);
 }
 
 /**
-* Load only when document is ready
+* Load only when doc is ready
 */
 (function () {
     setText();
@@ -152,7 +165,7 @@ function importGlobalLog(evt) {
 })();
 
 /**
-* Translate a string with the i18n API.
+* Translate a string with the i18n API
 *
 * @param {string} string Name of the attribute used for localization
 */
@@ -162,7 +175,7 @@ function translate(string)
 }
 
 /**
- * Set the text for the UI.
+ * Set text for the UI
  */
 function setText()
 {

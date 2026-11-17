@@ -30,6 +30,7 @@ importScripts(
   "core_js/historyListener.js",
   "clearurls.js",
   "core_js/storage.js",
+  "core_js/dnrTracker.js",
   "core_js/watchdog.js",
   "core_js/eTagFilter.js"
 );

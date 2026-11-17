@@ -86,7 +86,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Clear log with visual feedback
     clearLogBtn.addEventListener('click', function() {
-        browser.storage.local.set({ log: { log: [] } }).then(() => {
+        const emptyPayload = JSON.stringify({ log: [] });
+
+        browser.runtime.sendMessage({
+            function: 'setData',
+            params: ['log', emptyPayload]
+        }).catch(() => {});
+
+        browser.storage.local.set({ log: emptyPayload }).then(() => {
             const originalText = clearLogBtn.textContent;
             clearLogBtn.textContent = '✓ Log Cleared';
             clearLogBtn.style.backgroundColor = 'var(--success)';
@@ -104,10 +111,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Helper to parse log payload whether stored as JSON string or object
+    function parseLogEntries(rawLog) {
+        if (!rawLog) return [];
+        try {
+            const parsed = typeof rawLog === 'string' ? JSON.parse(rawLog) : rawLog;
+            return parsed && Array.isArray(parsed.log) ? parsed.log : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
     // Load log entries
     function loadLog() {
         browser.storage.local.get(['log']).then((data) => {
-            const logs = data.log && data.log.log ? data.log.log : [];
+            const logs = parseLogEntries(data.log);
 
             if (logs.length === 0) {
                 logContent.innerHTML = '<div class="no-logs">No log entries yet</div>';

@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to "ClearURLs2" will be documented in this file, along with the changelog history of the original project "ClearURLs".
 
+## [2.1.0] - 2026-11-17
+
+### Changed
+- Disk persistence (`saveOnDisk`) for `log` and `cleanedCounter` in `core_js/tools.js` and `core_js/dnrTracker.js` instead of deferred writes, preventing data loss when MV3 service worker suspends
+- Added auto state hydration from `chrome.storage.local` inside `recordCleanedUrl()` (`core_js/dnrTracker.js`) before recording cleaned UDIs
+- Sync of `declarativeNetRequest` rulesets (`clearurls_rules`) and in-memory storage flags on startup and via `chrome.storage.onChanged`
+- Updated popup and log page clear/reset/import actions to store JSON-serialized log payloads and sync state with background service worker
+
+### Fixed
+- Popup "URLs cleaned" counter not updating; now works
+- Enable/Disable extension toggle in popup not functioning; now works
+- Popup log viewer (`html/popup.js`) persistent stale state of "No log entries yet" due to reading JSON-serialized `log` strings without parsing
+- Full log table (`core_js/log.js`) and log export handling JSON-serialized storage payloads and avoiding double-stringification
+- Missing log entries when MV3 service worker woke up mid-request prior to in-memory storage hydration
+- Service worker context safety in `core_js/tools.js` by ensuring no DOM-dependent code runs in the background worker
+
+### Removed
+- Unused obsolete popup controller (`core_js/popup.js`)
+
 ## [2.0.0] - 2026-10-24
 
 ### New
