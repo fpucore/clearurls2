@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to "ClearURLs2" will be documented in this file, along with the changelog history of the original project "ClearURLs".
 
+## [2.1.3] - 2026-11-19
+
+### Fixed
+- "Skip Local Hosts" setting (`localHostsSkipping`) not preventing UDI parameter cleaning on local networks and `localhost`
+  - finalized across `2.1.1`–`2.1.3` testing iterations
+- Added high-priority MV3 `declarativeNetRequest` dynamic `allow` rules (`900001`–`900003`) in `core_js/dnrTracker.js`
+  - local destination domains (`requestDomains`)
+  - local initiator pages/iframes (`initiatorDomains`)
+  - private IPv4/IPv6 ranges (`localhost`, `*.local`, `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `[::1]`)
+- Added `isLocalHostUrl()` guard to `pureCleaning()` in `core_js/pureCleaning.js` so JS-based cleaners respect `localHostsSkipping`
+- Hydrated `globalStatus` and `localHostsSkipping` from `chrome.storage.local` in `core_js/historyListener.js`
+  - so `history.replaceState` cleaning skips local hosts even after a cold MV3 service worker wake-up
+
 ## [2.1.0] - 2026-11-17
 
 ### Changed

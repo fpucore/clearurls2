@@ -109,6 +109,82 @@ const cleanupRequest = (details) => {
 chrome.webRequest.onCompleted.addListener(cleanupRequest, { urls: ["<all_urls>"] });
 chrome.webRequest.onErrorOccurred.addListener(cleanupRequest, { urls: ["<all_urls>"] });
 
+
+// Dynamic rule IDs reserved for local host exemption
+const LOCAL_HOSTS_RULE_IDS = [900001, 900002, 900003];
+
+const ALL_RESOURCE_TYPES = [
+  "main_frame",
+  "sub_frame",
+  "stylesheet",
+  "script",
+  "image",
+  "font",
+  "object",
+  "xmlhttprequest",
+  "ping",
+  "csp_report",
+  "media",
+  "websocket",
+  "webtransport",
+  "webbundle",
+  "other"
+];
+
+// Sync high-priority DNR "allow" rules when localHostsSkipping is enabled
+function syncLocalHostsSkippingState(skipLocal) {
+  if (!chrome.declarativeNetRequest || !chrome.declarativeNetRequest.updateDynamicRules) return;
+
+  if (!skipLocal) {
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: LOCAL_HOSTS_RULE_IDS
+    }).catch((err) => {
+      console.error("[ClearURLs2] Failed to remove localHostsSkipping rules:", err);
+    });
+    return;
+  }
+
+  const localDomains = ["localhost", "local", "127.0.0.1", "::1"];
+
+  const addRules = [
+    {
+      id: 900001,
+      priority: 10000,
+      action: { type: "allow" },
+      condition: {
+        requestDomains: localDomains,
+        resourceTypes: ALL_RESOURCE_TYPES
+      }
+    },
+    {
+      id: 900002,
+      priority: 10000,
+      action: { type: "allow" },
+      condition: {
+        initiatorDomains: localDomains,
+        resourceTypes: ALL_RESOURCE_TYPES
+      }
+    },
+    {
+      id: 900003,
+      priority: 10000,
+      action: { type: "allow" },
+      condition: {
+        regexFilter: "^https?://(\\[::1\\]|127(?:\\.[0-9]{1,3}){3}|10(?:\\.[0-9]{1,3}){3}|172\\.(?:1[6-9]|2[0-9]|3[0-1])(?:\\.[0-9]{1,3}){2}|192\\.168(?:\\.[0-9]{1,3}){2})(?::[0-9]+)?(?:/|\\?|#|$)",
+        resourceTypes: ALL_RESOURCE_TYPES
+      }
+    }
+  ];
+
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: LOCAL_HOSTS_RULE_IDS,
+    addRules: addRules
+  }).catch((err) => {
+    console.error("[ClearURLs2] Failed to apply localHostsSkipping rules:", err);
+  });
+}
+
+
 // Sync Manifest V3 declarativeNetRequest ruleset with globalStatus toggle
 function syncDnrRulesetState(isEnabled) {
   if (!chrome.declarativeNetRequest || !chrome.declarativeNetRequest.updateEnabledRulesets) return;
@@ -122,7 +198,7 @@ function syncDnrRulesetState(isEnabled) {
   });
 }
 
-// Keep DNR ruleset and in-memory storage flags synced when popup/settings change storage
+// Keep DNR ruleset, dynamic rules, and in-memory storage flags synced when popup/settings change storage
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
 
@@ -131,6 +207,13 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
       storage.globalStatus = Boolean(changes.globalStatus.newValue);
     }
     syncDnrRulesetState(Boolean(changes.globalStatus.newValue));
+  }
+
+  if (changes.localHostsSkipping) {
+    if (typeof storage !== "undefined") {
+      storage.localHostsSkipping = Boolean(changes.localHostsSkipping.newValue);
+    }
+    syncLocalHostsSkippingState(Boolean(changes.localHostsSkipping.newValue));
   }
 
   if (changes.loggingStatus && typeof storage !== "undefined") {
@@ -142,13 +225,17 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   }
 });
 
-// Ensure ruleset matches stored globalStatus whenever service worker starts
-chrome.storage.local.get(["globalStatus", "loggingStatus", "logLimit"], (res) => {
+// Ensure ruleset and dynamic local-host rules match stored settings whenever service worker starts
+chrome.storage.local.get(["globalStatus", "localHostsSkipping", "loggingStatus", "logLimit"], (res) => {
   if (typeof res.globalStatus === "boolean") {
     syncDnrRulesetState(res.globalStatus);
   }
+  if (typeof res.localHostsSkipping === "boolean") {
+    syncLocalHostsSkippingState(res.localHostsSkipping);
+  }
   if (typeof storage !== "undefined") {
     if (typeof res.loggingStatus === "boolean") storage.loggingStatus = res.loggingStatus;
+    if (typeof res.localHostsSkipping === "boolean") storage.localHostsSkipping = res.localHostsSkipping;
     if (res.logLimit !== undefined) storage.logLimit = res.logLimit;
   }
 });

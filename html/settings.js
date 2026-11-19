@@ -116,8 +116,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Clear log
     clearLogBtn.addEventListener('click', function() {
+        const emptyPayload = JSON.stringify({ log: [] });
+        browser.runtime.sendMessage({
+            function: 'setData',
+            params: ['log', emptyPayload]
+        }).catch(() => {});
+
         browser.storage.local.set({
-            log: { log: [] }
+            log: emptyPayload
         }).then(() => {
             showStatus('Log cleared', 'success');
         }).catch((error) => {

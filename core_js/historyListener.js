@@ -1,5 +1,6 @@
 /*
-* ClearURLs
+* ClearURLs2
+* Copyright (c) 2026 Chris McGimpsey-Jones
 * Copyright (c) 2017-2025 Kevin Röbert
 *
 * This program is free software: you can redistribute it and/or modify
@@ -37,16 +38,33 @@ function historyListenerStart() {
 * which is associated with the new history entry created by replaceState()
 */
 function historyCleaner(details) {
-    if(storage.globalStatus) {
+    chrome.storage.local.get(["globalStatus", "localHostsSkipping"], (res) => {
+        const isGlobalEnabled = typeof res.globalStatus === "boolean"
+            ? res.globalStatus
+            : (typeof storage !== "undefined" && storage.globalStatus);
+        const skipLocal = typeof res.localHostsSkipping === "boolean"
+            ? res.localHostsSkipping
+            : (typeof storage !== "undefined" && storage.localHostsSkipping);
+
+        if (typeof storage !== "undefined") {
+            storage.globalStatus = Boolean(isGlobalEnabled);
+            storage.localHostsSkipping = Boolean(skipLocal);
+        }
+
+        if (!isGlobalEnabled) return;
+        if (skipLocal && typeof isLocalHostUrl === "function" && isLocalHostUrl(details.url)) {
+            return;
+        }
+
         const urlBefore = details.url;
         const urlAfter = pureCleaning(details.url);
 
-        if(urlBefore !== urlAfter) {
+        if (urlBefore !== urlAfter) {
             browser.scripting.executeScript({
                 target: { tabId: details.tabId, frameIds: [details.frameId] },
                 func: (cleanUrl) => { history.replaceState(null, "", cleanUrl); },
                 args: [urlAfter]
             }).then(() => {}, onError);
         }
-    }
+    });
 }

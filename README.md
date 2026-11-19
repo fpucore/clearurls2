@@ -36,6 +36,7 @@ https://chromewebstore.google.com/detail/clearurls2/kdkekhajgkgkocnnohkajiamohjc
    
 ```bash
 > git clone https://www.github.com/fpucore/ClearURLs2.git
+
 > cd ClearURLs2
 ```
    
@@ -64,6 +65,7 @@ To update the tracking rules, pull the latest changes from the submodule and reg
 
 ```bash
 > git submodule update --remote
+
 > node build_rules.js
 ```
 
