@@ -159,11 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateUI(data) {
         if (data.globalStatus) {
-            statusDiv.textContent = 'Extension enabled';
+            statusDiv.textContent = '✅ Extension enabled';
             statusDiv.className = 'status active';
             toggleBtn.textContent = 'Disable Extension';
         } else {
-            statusDiv.textContent = 'Extension disabled';
+            statusDiv.textContent = '❌ Extension disabled';
             statusDiv.className = 'status inactive';
             toggleBtn.textContent = 'Enable Extension';
         }
